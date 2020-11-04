@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const User = new Schema({
     idsocial: String,
-    username: String,
+    name: String,
     password: String,
     email: String,
     joindate: Date
