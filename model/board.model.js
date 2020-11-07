@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const Item = new Schema({
+    id: String,
     content: String,
     like: Number,
 

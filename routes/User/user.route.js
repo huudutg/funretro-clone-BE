@@ -38,6 +38,8 @@ const me = {
 
 }
 
+
+
 router.get("/", async (req, res) => {
     try {
         await User.find()
@@ -53,8 +55,9 @@ router.get("/", async (req, res) => {
 
 
 });
-router.get("/:id", async (req, res) => {
-    const id = req.params.id;
+router.get("/profile", async (req, res) => {
+
+    const id = req.user.id;
     try {
         await User.findById(id)
             .then(data => {
@@ -73,7 +76,6 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
     const body = me;
-    console.log('body', body)
     if (body) {
         try {
             const user = new User({
@@ -100,7 +102,7 @@ router.post("/", async (req, res) => {
 
 router.post("/register", async (req, res) => {
     const body = req.body;
-    console.log('body', body)
+    // console.log('body', body)
     if (body) {
         try {
             body.password = bcrypt.hashSync(req.body.password, 10);
@@ -112,10 +114,13 @@ router.post("/register", async (req, res) => {
             const result = await user.save()
                 .then(data => {
                     const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
-                    res.send({ id: data._id, token })
+                    // res.cookie("token2", token);
+                    res.send(token)
+                    // console.log('data', data)
+
                 })
                 .catch(err => {
-                    console.log('errrrr', err)
+                    console.log('errrrr2', err)
                 })
         } catch (error) {
             console.log('error3', error)
@@ -131,21 +136,54 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     const body = req.body;
-    console.log('body', body)
+    // console.log('body', body)
     if (body) {
         try {
-            await User.findOne({ email: body.email })
-                .then(data => {
-                    console.log('data', data)
-                    const rs = bcrypt.compareSync(body.password, data.password);
-                    if (rs) {
-                        const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
-                        res.send({ id: data._id, token })
-                    }
-                })
-                .catch(err => {
-                    console.log('errrrr', err)
-                })
+            if (body.idsocial) {
+                await User.findOne({ email: body.email })
+                    .then(data => {
+                        if (data) {
+                            const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
+                            res.send(token);
+                        }
+                        else {
+                            body.joindate = new Date();
+                            body.password = bcrypt.hashSync('1', 10);
+
+                            const user = new User({
+                                ...body
+                            })
+                            user.save()
+                                .then(data => {
+                                    const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
+                                    // res.cookie("token2", token);
+                                    res.send(token)
+                                    // console.log('data', data)
+
+                                })
+                                .catch(err => {
+                                    console.log('errrrr2', err)
+                                })
+                        }
+                    })
+                    .catch(err => {
+                        console.log('errrrrlgin', err)
+                    })
+            }
+            else {
+                await User.findOne({ email: body.email })
+                    .then(data => {
+                        const rs = bcrypt.compareSync(body.password, data.password);
+                        if (rs) {
+                            const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
+                            res.send(token);
+                        }
+                    })
+                    .catch(err => {
+                        console.log('errrrrlgin', err)
+                    })
+            }
+
 
         } catch (error) {
             console.log('error3', error)
@@ -158,15 +196,15 @@ router.post("/login", async (req, res) => {
 
     }
 });
-router.post("/update/:id", async (req, res) => {
-    const id = req.params.id;
+router.post("/update", async (req, res) => {
+    const id = req.user.id;
     const body = req.body;
-    console.log('body', body)
+    // console.log('body', body)
     if (body) {
         try {
             await User.findOne({ email: body.email })
                 .then(async (data) => {
-                    console.log('data', data)
+                    // console.log('data', data)
                     const rs = bcrypt.compareSync(body.password, data.password);
                     if (rs) {
                         delete body.password;

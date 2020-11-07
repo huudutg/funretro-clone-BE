@@ -1,81 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const Board = require('../../model/board.model')
+const Pusher = require("pusher");
 
-const me = {
-    uid: "5fa17c5c27f43f5b441ca560",
-    name: "Retropestive thang 11 ne",
-    context: "day la bang de nhin lai nhung thu ma ta da dat duoc trong thoi gian qua",
-    Item: [
-        [{
-            content: "String",
-            like: 3,
-        },
-        {
-            content: "haha",
-            like: 4,
-        }],
-        [{
-            content: "String",
-            like: 3,
-        },
-        {
-            content: "haha",
-            like: 4,
-        }],
-        [{
-            content: "String",
-            like: 3,
-        },
-        {
-            content: "haha",
-            like: 4,
-        }],
-    ]
-
-}
-const me2 = {
-    "uid": "123",
-    "name": "Juro Huynh",
-    "context": "day la bang de nhin lai nhung thu ma ta da dat duoc trong thoi gian qua",
-    "actionItems": [
-        {
-            "contain": "String",
-            "like": "3",
+const pusher = new Pusher({
+    appId: "1102819",
+    key: "fc572aa65b3feee3d449",
+    secret: "21760c5e9270f5515475",
+    cluster: "ap1",
+    useTLS: true
+});
+router.post("/test", async (req, res) => {
+    const body = req.body;
+    if (body) {
+        try {
+            pusher.trigger("fun", "retro", {
+                name: "Du",
+                data: body
+            });
+        } catch (error) {
+            console.log('error', error)
+            res.send(error)
         }
-    ],
-    "toImprove": [
-        {
-            "contain": "String",
-            "like": "3",
-        }
-    ],
-    "wentWell": [
-        {
-            "contain": "String",
-            "like": "3",
-        }
-    ]
 
-}
-// router.get("/", async (req, res) => {
-//     try {
-//         await Board.find()
-//             .then(data => {
-//                 res.send(data)
-//             })
-//             .catch(err => {
-//                 console.log('errrrr', err)
-//             })
-//     } catch (error) {
-//         res.send(error)
-//     }
+    }
+    else {
+        res.sendStatus(500);
+
+    }
+});
 
 
-// });
-router.get("/getByUid/:id", async (req, res) => {
-    const id = req.params.id;
-    console.log('id', id)
+router.get("/getByUid", async (req, res) => {
+    const id = req.user.id;
     try {
         await Board.find({ uid: id })
             .then(data => {
@@ -92,11 +49,9 @@ router.get("/getByUid/:id", async (req, res) => {
 });
 router.get("/:id", async (req, res) => {
     const id = req.params.id;
-    console.log('typeof(id', typeof (id))
     try {
         await Board.findById(id)
             .then(data => {
-
                 res.send(data)
             })
             .catch(err => {
@@ -111,8 +66,8 @@ router.get("/:id", async (req, res) => {
 
 router.post("/createBoard", async (req, res) => {
     const body = req.body;
-    console.log('board', body)
-
+    const id = req.user.id;
+    body.uid = id
     if (body) {
         try {
             const board = new Board({
@@ -138,7 +93,6 @@ router.post("/createBoard", async (req, res) => {
 
 router.post("/", async (req, res) => {
     const body = me;
-    console.log('board', body)
 
     if (body) {
         try {
@@ -166,12 +120,28 @@ router.post("/", async (req, res) => {
 
 router.post("/edit/:id", async (req, res) => {
     const body = req.body;
+    delete body._id
     const id = req.params.id;
-    console.log('body', body)
     if (body) {
         try {
-            await Board.findByIdAndUpdate(id,
+
+            Board.findByIdAndUpdate(id,
                 { $set: { ...body } })
+                .then(data => {
+                    if (body.name || body.conte) {
+                        pusher.trigger("fun", 'title', body);
+
+                    }
+                    else {
+                        pusher.trigger("fun", 'id', body.Item);
+
+                    }
+                    res.sendStatus(200)
+                })
+
+                .catch(err => {
+                    console.log('errrrr444', err)
+                })
         } catch (error) {
             res.send(error)
         }
