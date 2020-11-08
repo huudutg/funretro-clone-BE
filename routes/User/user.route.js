@@ -103,7 +103,8 @@ router.post("/", async (req, res) => {
 router.post("/register", async (req, res) => {
     const body = req.body;
     // console.log('body', body)
-    if (body) {
+    const check = await User.findOne({ email: body.email })
+    if (!check) {
         try {
             body.password = bcrypt.hashSync(req.body.password, 10);
 
@@ -144,7 +145,8 @@ router.post("/login", async (req, res) => {
                     .then(data => {
                         if (data) {
                             const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
-                            res.send(token);
+                            res.send(token)
+                                .sendStatus(200);
                         }
                         else {
                             body.joindate = new Date();
@@ -157,30 +159,40 @@ router.post("/login", async (req, res) => {
                                 .then(data => {
                                     const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
                                     // res.cookie("token2", token);
-                                    res.send(token)
+                                    res.send(token).sendStatus(200)
                                     // console.log('data', data)
 
                                 })
                                 .catch(err => {
                                     console.log('errrrr2', err)
+                                    res.sendStatus(400)
                                 })
                         }
                     })
                     .catch(err => {
                         console.log('errrrrlgin', err)
+                        res.sendStatus(400)
                     })
             }
             else {
                 await User.findOne({ email: body.email })
                     .then(data => {
-                        const rs = bcrypt.compareSync(body.password, data.password);
-                        if (rs) {
-                            const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
-                            res.send(token);
+                        if (data) {
+                            const rs = bcrypt.compareSync(body.password, data.password);
+                            if (rs) {
+                                const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
+                                res.send(token).sendStatus(200);
+                            }
                         }
+                        else {
+                            res.sendStatus(400)
+                        }
+
                     })
                     .catch(err => {
                         console.log('errrrrlgin', err)
+                        res.sendStatus(400)
+
                     })
             }
 
