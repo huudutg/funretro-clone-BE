@@ -26,6 +26,7 @@ app.use(function (req, res, next) {
         jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
             if (err) res.sendStatus(403);
             req.user = user;
+            console.log('user', user)
 
 
         })

@@ -145,8 +145,7 @@ router.post("/login", async (req, res) => {
                     .then(data => {
                         if (data) {
                             const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
-                            res.send(token)
-                                .sendStatus(200);
+                            res.send(token);
                         }
                         else {
                             body.joindate = new Date();
@@ -159,7 +158,7 @@ router.post("/login", async (req, res) => {
                                 .then(data => {
                                     const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
                                     // res.cookie("token2", token);
-                                    res.send(token).sendStatus(200)
+                                    res.send(token)
                                     // console.log('data', data)
 
                                 })
@@ -181,7 +180,7 @@ router.post("/login", async (req, res) => {
                             const rs = bcrypt.compareSync(body.password, data.password);
                             if (rs) {
                                 const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY)
-                                res.send(token).sendStatus(200);
+                                res.send(token);
                             }
                         }
                         else {
