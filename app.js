@@ -8,7 +8,7 @@ app.use(cookePaser());
 var bodyParser = require('body-parser');
 const jwt = require("jsonwebtoken");
 
-app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true, origin: 'https://funretro-be.herokuapp.com/' }));
 app.use(bodyParser.json())
 
 app.use(express.json());
@@ -17,7 +17,6 @@ app.use(
         extended: true,
     })
 );
-app.set('trust proxy', 1)
 app.use(function (req, res, next) {
     res.header("Set-Cookie", "SameSite=None;Secure");
     res.header("Access-Control-Allow-Credentials", true);
