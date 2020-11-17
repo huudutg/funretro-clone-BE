@@ -19,6 +19,7 @@ app.use(
 );
 app.use(function (req, res, next) {
     const token = req.cookies.token;
+    console.log('req.cookies', req.cookies)
     if (!token) {
 
     }
