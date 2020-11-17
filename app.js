@@ -18,7 +18,7 @@ app.use(
     })
 );
 app.use(function (req, res, next) {
-    res.header("Set-Cookie", "HttpOnly;Secure;SameSite=None");
+    res.header("Set-Cookie", "HttpOnly;Secure;SameSite=Lax");
 
     const token = req.cookies.token;
     console.log('req.cookies', req.cookies)
