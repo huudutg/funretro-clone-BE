@@ -8,7 +8,7 @@ app.use(cookePaser());
 var bodyParser = require('body-parser');
 const jwt = require("jsonwebtoken");
 
-app.use(cors({ credentials: true, origin: 'https://funretro-be.herokuapp.com/' }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(bodyParser.json())
 
 app.use(express.json());
