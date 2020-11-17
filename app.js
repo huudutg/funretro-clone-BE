@@ -22,11 +22,11 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     // res.header("Access-Control-Allow-Origin", "https://funretro-7aa52.web.app");
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
-    );
+    // res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+    // res.header(
+    //     "Access-Control-Allow-Headers",
+    //     "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
+    // );
     const token = req.cookies.token;
     console.log('req.cookies', req.cookies)
     if (!token) {
