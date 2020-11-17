@@ -18,6 +18,8 @@ app.use(
     })
 );
 app.use(function (req, res, next) {
+    res.header("Set-Cookie", "HttpOnly;Secure;SameSite=Strict");
+
     const token = req.cookies.token;
     console.log('req.cookies', req.cookies)
     if (!token) {
