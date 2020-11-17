@@ -18,7 +18,7 @@ app.use(
     })
 );
 app.use(function (req, res, next) {
-    res.header("Set-Cookie", "SameSite=None;Secure");
+    res.header("Set-Cookie", "SameSite=None,Secure");
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     // res.header("Access-Control-Allow-Origin", "https://funretro-7aa52.web.app");
