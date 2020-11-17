@@ -32,9 +32,8 @@ router.post("/test", async (req, res) => {
 
 
 router.get("/getByUid", async (req, res) => {
-
+    const id = req.user ? req.user.id : 0;
     try {
-        const id = req.user.id;
         await Board.find({ uid: id })
             .then(data => {
                 res.send(data)
@@ -67,11 +66,10 @@ router.get("/:id", async (req, res) => {
 
 router.post("/createBoard", async (req, res) => {
     const body = req.body;
-
+    const id = req.user.id;
+    body.uid = id
     if (body) {
         try {
-            const id = req.user.id;
-            body.uid = id
             const board = new Board({
                 ...body
             })
