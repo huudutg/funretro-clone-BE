@@ -17,6 +17,7 @@ app.use(
         extended: true,
     })
 );
+app.set('trust proxy', 1)
 app.use(function (req, res, next) {
     res.header("Set-Cookie", "SameSite=None;Secure");
     res.header("Access-Control-Allow-Credentials", true);
@@ -28,7 +29,7 @@ app.use(function (req, res, next) {
         "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
     );
     const token = req.cookies.token;
-    console.log('req.cookies', req.cookies)
+    // console.log('req.cookies', req)
     if (!token) {
 
     }
