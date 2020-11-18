@@ -17,13 +17,7 @@ app.use(
         extended: true,
     })
 );
-// app.use(cors((req, cb) => {
-//     if (req.query.trusted) {
-//         cb(null, { origin: 'https://funretro-7aa52.web.app', credentials: true });
-//     } else {
-//         cb(new Error('Not trusted'));
-//     }
-// }));
+
 app.use(cors({
     methods: 'GET,POST,PUT',
     exposedHeaders: 'Content-Range,X-Content-Range',
@@ -39,8 +33,8 @@ app.use(function (req, res, next) {
         "Access-Control-Allow-Headers",
         "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
     );
-    const token = req.cookies.token;
-    console.log('req.cookies', req.headers)
+    const token = req.headers.authorization;
+    // console.log('req.cookies', req.headers.authorization)
     if (!token) {
 
     }
